@@ -4,7 +4,7 @@ var fs   = require('fs');
 var path = require('path');
 var util = require('util');
 var EOL  = require('os').EOL;
-
+var process = require('process');
 
 var LEVELS = [ 'error', 'warn', 'info', 'verbose', 'debug', 'silly' ];
 
@@ -59,7 +59,6 @@ module.exports.transports.file.format = formatFile;
 module.exports.transports.file.level = 'warn';
 module.exports.transports.file.maxSize = 1024 * 1024;
 module.exports.transports.file.streamConfig = undefined;
-
 module.exports.findLogPath = findLogPath;
 
 for (var i = 0; i < LEVELS.length; i++) {
@@ -187,6 +186,9 @@ function findLogPath(appName) {
   }
 
   if (dir) {
+    if (process.type === 'renderer') {
+      return path.join(dir, 'renderer_log.log');
+    }
     return path.join(dir, 'log.log');
   } else {
     return false;
